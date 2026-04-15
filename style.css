@@ -1,0 +1,12 @@
+/* style.css - Additional styles if needed */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+/* The main styles are already inside home.html and index.html */
+/* This file is for any overrides or additional global styles */

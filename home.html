@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sivateam007 - Programming Courses</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --git-color: #f05033;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body { background: #f8f9fa; color: #333; line-height: 1.6; }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-circle img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .logo-text h1 {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 5px;
+        }
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .logo-text span { color: #ffd700; }
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+        .search-bar {
+            background: white;
+            border-radius: 50px;
+            padding: 12px 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .search-bar:focus-within {
+            border-color: var(--git-color);
+            box-shadow: 0 5px 25px rgba(240,80,51,0.2);
+            transform: translateY(-2px);
+        }
+        .search-icon { color: var(--git-color); font-size: 1.2rem; }
+        .search-input { flex:1; border:none; outline:none; font-size:1rem; background:transparent; }
+        .clear-search { background:none; border:none; color:#999; cursor:pointer; display:none; }
+        .search-results-info { text-align:center; margin-top:15px; color:#666; }
+        .no-results { text-align:center; padding:60px 20px; display:none; }
+        .user-menu { display:flex; align-items:center; gap:20px; }
+        .user-info { text-align:right; }
+        .user-name { font-weight:600; font-size:1.1rem; }
+        .user-email { font-size:0.9rem; opacity:0.9; }
+        .logout-btn {
+            padding:10px 25px;
+            background:rgba(255,255,255,0.2);
+            color:white;
+            border:2px solid rgba(255,255,255,0.3);
+            border-radius:8px;
+            font-weight:600;
+            cursor:pointer;
+            transition:all 0.3s;
+        }
+        .logout-btn:hover { background:white; color:var(--git-color); }
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--git-color), #6e5494);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .welcome-content { max-width:800px; margin:0 auto; }
+        .welcome-content h2 { font-size:2.5rem; margin-bottom:15px; }
+        .stats { display:flex; justify-content:center; gap:40px; margin-top:30px; flex-wrap:wrap; }
+        .stat-number { font-size:2.5rem; font-weight:bold; color:#ffd700; }
+        .container { max-width:1200px; margin:0 auto; padding:0 20px; }
+        .section-title { text-align:center; margin:60px 0 40px; }
+        .section-title h2 { font-size:2.5rem; color:var(--dark); margin-bottom:15px; }
+        .title-divider { width:80px; height:4px; background:var(--git-color); margin:0 auto; border-radius:2px; }
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .course-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--git-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .course-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+        .course-icon {
+            height: 120px;
+            background: linear-gradient(135deg, var(--git-color), #3498db);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        .course-content { padding: 25px; flex-grow:1; display: flex; flex-direction: column; }
+        .course-title { color: var(--dark); margin-bottom:15px; font-size:1.4rem; font-weight:600; }
+        .course-description { color: #666; margin-bottom:20px; flex-grow:1; }
+        .course-meta { display:flex; justify-content:space-between; margin-bottom:20px; color:#888; }
+        .course-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--git-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: auto;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+        .course-link:hover { background: var(--primary); transform: translateX(5px); }
+        .buy-btn { background: linear-gradient(135deg, #f0b90b, #e67e22); }
+        .enrolled-btn { background: #27ae60; cursor: pointer; }
+        .features-section { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding:60px 0; margin:60px 0; }
+        .features-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:30px; }
+        .feature-card { background:white; padding:30px; border-radius:10px; text-align:center; border-top:4px solid var(--git-color); }
+        .feature-icon { font-size:2.5rem; color:var(--git-color); margin-bottom:20px; }
+        .cta-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin: 60px 0;
+        }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            color: var(--git-color);
+            padding: 16px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        footer {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .footer-column h3 { color: var(--accent); margin-bottom:20px; }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li a { color: #ddd; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .copyright { text-align:center; margin-top:60px; padding-top:30px; border-top:1px solid rgba(255,255,255,0.1); }
+        @media (max-width:768px) {
+            .header-container { flex-direction: column; gap:15px; text-align:center; }
+            .user-menu { flex-direction: column; }
+        }
+        @keyframes fadeInUp {
+            from { opacity:0; transform:translateY(30px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+        .course-card { animation: fadeInUp 0.6s ease-out forwards; opacity:0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-circle"><img src="logo.jpg" alt="sivateam007 Logo"></div>
+                <div class="logo-text"><h1>Hi <span>Goku</span></h1><p>Premium Programming Tutorials in Tamil</p></div>
+            </div>
+            <div class="user-menu">
+                <div class="user-info"><div class="user-name" id="userName">Welcome, User</div><div class="user-email" id="userEmail">user@example.com</div></div>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="welcome-banner">
+        <div class="welcome-content">
+            <h2>Learn to Code Like a Pro</h2>
+            <p>Master programming with our premium Tamil tutorials. Enroll now and start your journey!</p>
+            <div class="stats">
+                <div class="stat-item"><div class="stat-number">9+</div><div class="stat-label">Premium Courses</div></div>
+                <div class="stat-item"><div class="stat-number">500+</div><div class="stat-label">Students Enrolled</div></div>
+                <div class="stat-item"><div class="stat-number">200+</div><div class="stat-label">Code Examples</div></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="search-container">
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search courses...">
+            <button class="clear-search" id="clearSearch"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="search-results-info" id="searchResultsInfo">Showing all courses</div>
+    </div>
+
+    <main class="container">
+        <section class="section-title">
+            <h2>Our Premium Courses</h2>
+            <p>All courses are paid. Purchase once and get lifetime access.</p>
+            <div class="title-divider"></div>
+        </section>
+        <div class="no-results" id="noResults"><i class="fas fa-search"></i><h3>No courses found</h3></div>
+        <div class="courses-grid" id="coursesGrid"></div>
+
+        <section class="features-section">
+            <div class="container">
+                <div class="section-title"><h2>Why Learn With Us?</h2><div class="title-divider"></div></div>
+                <div class="features-grid">
+                    <div class="feature-card"><div class="feature-icon"><i class="fas fa-language"></i></div><h3>Tamil Tutorials</h3><p>All courses taught in Tamil</p></div>
+                    <div class="feature-card"><div class="feature-icon"><i class="fas fa-laptop-code"></i></div><h3>Practical Learning</h3><p>Real-world projects</p></div>
+                    <div class="feature-card"><div class="feature-icon"><i class="fas fa-certificate"></i></div><h3>Get Certified</h3><p>Certificate upon completion</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container"><h2>Ready to Start Coding?</h2><p>Join thousands of students who have transformed their careers</p><a href="#" class="cta-button" onclick="document.querySelector('.courses-grid').scrollIntoView({behavior:'smooth'}); return false;"><i class="fas fa-play-circle"></i> Browse All Courses</a></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column"><h3>sivateam007</h3><p>Premium Programming Education in Tamil</p></div>
+            <div class="footer-column"><h3>Quick Links</h3><ul><li><a href="#"><i class="fas fa-arrow-right"></i> About Us</a></li><li><a href="#"><i class="fas fa-arrow-right"></i> Contact</a></li></ul></div>
+            <div class="footer-column"><h3>Connect</h3><ul><li><a href="#"><i class="fab fa-github"></i> GitHub</a></li><li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li></ul></div>
+        </div>
+        <div class="copyright"><p>&copy; 2024 sivateam007. All rights reserved. | Premium Programming Education</p></div>
+    </footer>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'index.html';
+        
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            document.getElementById('userName').innerText = `Welcome, ${user.name || user.email.split('@')[0]}`;
+            document.getElementById('userEmail').innerText = user.email;
+        }
+        
+        window.logout = function() { localStorage.clear(); window.location.href = 'index.html'; };
+        
+        let allCourses = [];
+        let enrolledKeys = new Set(); // store enrolled course keys
+        
+        // Fetch user's enrollments first
+        async function fetchEnrollments() {
+            try {
+                const res = await fetch(`${API_URL}/my-enrollments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.enrolled) {
+                    data.enrolled.forEach(c => enrolledKeys.add(c.course_key));
+                }
+            } catch (err) { console.error('Enrollments error:', err); }
+        }
+        
+        async function loadCourses() {
+            await fetchEnrollments();
+            try {
+                const res = await fetch(`${API_URL}/courses`);
+                const data = await res.json();
+                allCourses = data.courses;
+                renderCourses(allCourses);
+            } catch (err) { console.error(err); }
+        }
+        
+        function renderCourses(courses) {
+            const grid = document.getElementById('coursesGrid');
+            grid.innerHTML = '';
+            if (courses.length === 0) {
+                document.getElementById('noResults').style.display = 'block';
+                grid.style.display = 'none';
+                return;
+            }
+            document.getElementById('noResults').style.display = 'none';
+            grid.style.display = 'grid';
+            
+            courses.forEach(course => {
+                const isEnrolled = enrolledKeys.has(course.course_key);
+                const priceRupee = (course.price / 100).toFixed(2);
+                let iconHtml = '<i class="fas fa-code"></i>';
+                if (course.course_key.includes('html')) iconHtml = '<i class="fab fa-html5"></i>';
+                else if (course.course_key.includes('css')) iconHtml = '<i class="fab fa-css3-alt"></i>';
+                else if (course.course_key.includes('python')) iconHtml = '<i class="fab fa-python"></i>';
+                else if (course.course_key.includes('node')) iconHtml = '<i class="fab fa-node-js"></i>';
+                else if (course.course_key.includes('git')) iconHtml = '<i class="fab fa-git-alt"></i>';
+                else if (course.course_key.includes('react')) iconHtml = '<i class="fab fa-react"></i>';
+                else iconHtml = '<i class="fas fa-laptop-code"></i>';
+                
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.setAttribute('data-course-name', course.course_key);
+                card.setAttribute('data-course-title', course.name);
+                card.innerHTML = `
+                    <div class="course-icon">${iconHtml}</div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.name}</h3>
+                        <p class="course-description">${course.description}</p>
+                        <div class="course-meta">
+                            <span><i class="fas fa-tag"></i> ₹${priceRupee}</span>
+                            <span><i class="fas fa-level-up-alt"></i> Premium</span>
+                        </div>
+                        ${isEnrolled ? 
+                            `<a href="${course.course_url}" target="_blank" class="course-link enrolled-btn">
+                                <span>Start Learning</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>` :
+                            `<button class="course-link buy-btn" data-course="${course.course_key}" data-price="${course.price}" data-url="${course.course_url}">
+                                <span>Buy Now ₹${priceRupee}</span>
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>`
+                        }
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            // Attach buy handlers
+            document.querySelectorAll('.buy-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const course_key = btn.getAttribute('data-course');
+                    const course_url = btn.getAttribute('data-url');
+                    const token = localStorage.getItem('token');
+                    if (!token) { alert('Please login'); window.location.href='index.html'; return; }
+                    btn.innerHTML = '<span>Processing...</span><i class="fas fa-spinner fa-spin"></i>';
+                    btn.disabled = true;
+                    try {
+                        const res = await fetch(`${API_URL}/create-order`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ course_key })
+                        });
+                        const data = await res.json();
+                        if (!data.success) throw new Error(data.error);
+                        const options = {
+                            key: data.keyId,
+                            amount: data.amount,
+                            currency: data.currency,
+                            name: 'sivateam007',
+                            description: data.course_name,
+                            order_id: data.orderId,
+                            handler: async (response) => {
+                                const verify = await fetch(`${API_URL}/verify-payment`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                                    body: JSON.stringify({
+                                        order_id: response.razorpay_order_id,
+                                        payment_id: response.razorpay_payment_id,
+                                        signature: response.razorpay_signature,
+                                        course_key: course_key
+                                    })
+                                });
+                                const vdata = await verify.json();
+                                if (vdata.success) {
+                                    alert('Payment successful! You are now enrolled.');
+                                    // Reload page to show Start Learning button
+                                    window.location.reload();
+                                } else {
+                                    alert('Verification failed. Contact support.');
+                                }
+                            },
+                            prefill: { email: user.email, name: user.name },
+                            theme: { color: '#f05033' }
+                        };
+                        const rzp = new Razorpay(options);
+                        rzp.open();
+                    } catch (err) {
+                        alert(err.message);
+                        btn.innerHTML = `<span>Buy Now ₹${btn.getAttribute('data-price')/100}</span><i class="fas fa-shopping-cart"></i>`;
+                        btn.disabled = false;
+                    }
+                });
+            });
+        }
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const clearSearch = document.getElementById('clearSearch');
+        const resultsInfo = document.getElementById('searchResultsInfo');
+        
+        function filterCourses() {
+            const term = searchInput.value.trim().toLowerCase();
+            if (term === '') {
+                renderCourses(allCourses);
+                resultsInfo.innerText = `Showing all ${allCourses.length} courses`;
+                clearSearch.style.display = 'none';
+                return;
+            }
+            clearSearch.style.display = 'block';
+            const filtered = allCourses.filter(c => 
+                c.name.toLowerCase().includes(term) || 
+                c.description.toLowerCase().includes(term) ||
+                c.course_key.toLowerCase().includes(term)
+            );
+            renderCourses(filtered);
+            resultsInfo.innerText = `Found ${filtered.length} course${filtered.length !== 1 ? 's' : ''} matching "${term}"`;
+        }
+        
+        searchInput.addEventListener('input', filterCourses);
+        clearSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            filterCourses();
+            searchInput.focus();
+        });
+        
+        loadCourses();
+    </script>
+</body>
+</html>
