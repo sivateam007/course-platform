@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CodeMaster</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">CodeMaster</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#" id="logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="welcome-section">
+            <h2>Welcome, <span id="user-name"></span>! 🎓</h2>
+            <p>Continue your learning journey</p>
+        </div>
+
+        <div class="my-courses">
+            <h3>📚 My Courses</h3>
+            <div id="enrolled-courses" class="course-list"></div>
+        </div>
+
+        <div class="progress-section">
+            <h3>📊 Learning Progress</h3>
+            <div id="progress-tracker"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        const token = localStorage.getItem('auth_token');
+        
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+        
+        const userName = localStorage.getItem('user_name');
+        document.getElementById('user-name').innerText = userName;
+        
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_URL}/dashboard`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.courses) {
+                    displayCourses(data.courses);
+                    displayProgress(data.progress);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+        
+        function displayCourses(courses) {
+            const container = document.getElementById('enrolled-courses');
+            if (!courses || courses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>📖 You haven't enrolled in any courses yet.</p>
+                        <a href="index.html#courses" class="btn-primary">Browse Courses</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = courses.map(course => `
+                <div class="course-card-small">
+                    <h4>${course.name}</h4>
+                    <p>${course.description}</p>
+                    <div class="course-meta">
+                        <span>Enrolled: ${new Date(course.enrolled_at).toLocaleDateString()}</span>
+                        <span>Progress: ${course.progress}%</span>
+                    </div>
+                    <button onclick="updateProgress('${course.course_key}', ${Math.min(course.progress + 10, 100)})" class="btn-small">
+                        Mark 10% Complete
+                    </button>
+                    ${course.progress === 100 ? '<span class="completed-badge">✅ Certificate Ready</span>' : ''}
+                </div>
+            `).join('');
+        }
+        
+        function displayProgress(progress) {
+            const container = document.getElementById('progress-tracker');
+            if (!progress || progress.length === 0) {
+                container.innerHTML = '<p>No courses in progress yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = progress.map(p => `
+                <div class="progress-item">
+                    <span><strong>${p.course_name}</strong></span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${p.progress}%"></div>
+                    </div>
+                    <span>${p.progress}% complete</span>
+                </div>
+            `).join('');
+        }
+        
+        async function updateProgress(course_key, progress) {
+            try {
+                const response = await fetch(`${API_URL}/progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ course_key, progress })
+                });
+                
+                if (response.ok) {
+                    loadDashboard(); // Refresh dashboard
+                    if (progress === 100) {
+                        alert('🎉 Congratulations! You have completed the course! Your certificate is ready.');
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating progress:', error);
+            }
+        }
+        
+        document.getElementById('logout').addEventListener('click', () => {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_email');
+            window.location.href = 'index.html';
+        });
+        
+        loadDashboard();
+    </script>
+</body>
+</html>

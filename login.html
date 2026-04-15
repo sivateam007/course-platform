@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CodeMaster</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>Welcome Back</h2>
+            <p>Login to access your courses</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            
+            <p class="auth-switch">
+                Don't have an account? <a href="#" onclick="showSignup()">Sign up</a>
+            </p>
+        </div>
+
+        <div class="auth-box" id="signup-box" style="display: none;">
+            <h2>Create Account</h2>
+            <p>Start your coding journey today</p>
+            
+            <form id="signup-form">
+                <div class="form-group">
+                    <input type="text" id="signup-name" placeholder="Full name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signup-email" placeholder="Email address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary">Sign Up</button>
+            </form>
+            
+            <p class="auth-switch">
+                Already have an account? <a href="#" onclick="showLogin()">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await response.json();
+            if (data.token) {
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('user_name', data.user.name);
+                localStorage.setItem('user_email', data.user.email);
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Login failed: ' + data.error);
+            }
+        });
+        
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            
+            const response = await fetch(`${API_URL}/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            
+            const data = await response.json();
+            if (data.token) {
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('user_name', data.user.name);
+                localStorage.setItem('user_email', data.user.email);
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Signup failed: ' + data.error);
+            }
+        });
+        
+        function showSignup() {
+            document.querySelector('.auth-box').style.display = 'none';
+            document.getElementById('signup-box').style.display = 'block';
+        }
+        
+        function showLogin() {
+            document.getElementById('signup-box').style.display = 'none';
+            document.querySelector('.auth-box').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
